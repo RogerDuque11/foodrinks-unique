@@ -1,0 +1,92 @@
+import React, {useState, useLayoutEffect} from 'react'
+import { ScrollView, View, Text } from 'react-native'
+
+import CurrentScheme from '../constants/CurrentScheme'
+import Constants from "../constants/Constants"
+import Header from '../components/Header'
+import LoadingScreen from '../components/LoadingScreen'
+import InputText from '../components/InputText'
+
+import FBController from  '../controllers/FirebaseController'
+import Supply from  '../models/Supply'
+
+const _F = Constants.FUNCTIONS
+var DateFormat = _F.DateFormat
+
+const CreateSupplyScreen = ({route, navigation}) => {
+    const { PROFILE, LOCAL } = Constants.SESION
+    const { styles, colors, trans } = CurrentScheme()
+    const [ isLoading, setLoading ] = useState(false)
+    const [ supply, setSupply ] = useState(new Supply())
+
+    var date = new Date()
+    supply.code = DateFormat.code(date)
+    
+    useLayoutEffect(() => {
+        const left  = { icon: 'close', color: colors.text }
+        const right = { icon: 'check', color: colors.accent }
+        navigation.setOptions({
+          title: '',
+          header: () => ( <Header 
+            params={{ title:trans('supplyCreate'), left, right }}  
+            onPressLeft={ onPressCancel }  
+            onPressRight={ onPressCreate } />)
+        });
+    }, [navigation]);
+
+    const onPressCreate = async () => {
+        var exceptionsValidate = validation(supply, trans)
+        if( ! exceptionsValidate ){
+            try {
+                setLoading(true)
+                await FBController.FS_Create('SUPPLIES', supply.code, supply)
+                navigation.goBack(null)
+            } catch (error) {
+                Constants.NOTIFY('ERROR', error.code, 'CreateSupply/onPressCreate', error.message)
+            }
+        }else{
+            alert('ERROR => CREAR SUMINISTRO:\n' + Object.values(exceptionsValidate))
+        }
+    }
+
+    const onPressCancel = () => {
+        navigation.goBack(null)
+    }
+
+    return (
+        <ScrollView style={[ ]}>
+            <View style={[ styles.container, styles.alignCenter ]}>
+                
+                { isLoading ? <LoadingScreen loading={isLoading} size={'large'} color={colors.primary} />  : null }
+                <View style={[ styles.column, styles.paddingMedium_X, styles.widthForm, styles.marginMedium_B ]}>
+                    
+                    <InputText
+                        tag={trans('code')} type={'default'} editable={false}
+                        value={(supply.code).toString()} />
+                    <InputText
+                        tag={trans('name')} type={'default'}
+                        onChangeText={(text) => supply.name = text } />
+                    <InputText
+                        tag={trans('details')} type={'default'}
+                        onChangeText={(text) => supply.details = text } />
+
+                </View> 
+                
+            </View>
+        </ScrollView>
+    )
+}
+
+const validation = (attrs, trans) =>{
+    const exep = {}
+    const _v = Constants.VALIDATE
+    Object.entries(attrs).map(([key, value]) => {
+        if(key === 'code' || key === 'name'){
+            _v.verifyString(value) ? null : exep[key] = '\n * ' + trans(key) + ': Obigatorio'
+        }
+    })
+    return Object.entries(exep).length !== 0 ? exep : null
+}
+
+export default CreateSupplyScreen
+
