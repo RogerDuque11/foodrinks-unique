@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "Foodrink-s",
+    "slug": "Foodrink-s",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "Foodrink-s"
+}
