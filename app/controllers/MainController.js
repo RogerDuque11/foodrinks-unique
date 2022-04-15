@@ -10,17 +10,17 @@ var REF = ''
 class MainController {
 
     constructor(){
-        REF = CHILD ? 'COMPANIES/' + CHILD : ''
+        REF = CHILD ? 'COMPANY/' + CHILD : ''
     }
 
     createData = async (ref, data) => {
-        var REF = 'COMPANIES/' + Constants.SESION.PROFILE.company + ref
+        var REF = 'COMPANY/' + Constants.SESION.PROFILE.company + ref
         return Firebase.database.ref(REF).set(data)
     }
 
     readDataOn = async (ref) => {
         var data = [] 
-        var REF = 'COMPANIES/' + Constants.SESION.PROFILE.company + ref
+        var REF = 'COMPANY/' + Constants.SESION.PROFILE.company + ref
         Firebase.database.ref(REF).on('value', function(snapshot) {
             snapshot.forEach(child =>{ data.push(child.val()) })
         })
@@ -29,7 +29,7 @@ class MainController {
 
     readDataBy = async (ref, parameter, value) => {
         var data = []
-        var REF = 'COMPANIES/' + Constants.SESION.PROFILE.company + ref
+        var REF = 'COMPANY/' + Constants.SESION.PROFILE.company + ref
         Firebase.database.ref(REF).orderByChild(parameter).equalTo(value).on("value", function(snapshot) {
             snapshot.forEach(child =>{ data.push(child.val()) })
         })
@@ -38,24 +38,24 @@ class MainController {
 
     readDataOnly = async (ref) => {
         //var REF = 'companys/18112020184432' + ref
-        var REF = 'COMPANIES/' + Constants.SESION.PROFILE.company + ref
+        var REF = 'COMPANY/' + Constants.SESION.PROFILE.company + ref
         return (await Firebase.database.ref(REF).once('value')).val()
     }
 
     updateData = async (ref, data) => {
-        var REF = 'COMPANIES/' + Constants.SESION.PROFILE.company + ref
+        var REF = 'COMPANY/' + Constants.SESION.PROFILE.company + ref
         return Firebase.database.ref(REF).update(data);
     }
 
     deleteData = async (ref) => {
         //var REF = 'companys/18112020184432' + ref
-        var REF = 'COMPANIES/' + Constants.SESION.PROFILE.company + ref
+        var REF = 'COMPANY/' + Constants.SESION.PROFILE.company + ref
         return Firebase.database.ref(REF).remove()
     }
 
     // INIT STORGAE METHODS
     uploadStorage = async (ref, data) => {
-        var REF = 'COMPANIES/' + Constants.SESION.PROFILE.company + ref
+        var REF = 'COMPANY/' + Constants.SESION.PROFILE.company + ref
         await Firebase.storage.ref(REF).put(data)
         var url = await Firebase.storage.ref().child(REF+ref).getDownloadURL()
         console.log(consol.FgGreen, 'Success upload Storage', consol.Reset)
@@ -63,7 +63,7 @@ class MainController {
     }
 
     downloadStorageUrl = async (ref) => {
-        var REF = 'COMPANIES/' + Constants.SESION.PROFILE.company + ref
+        var REF = 'COMPANY/' + Constants.SESION.PROFILE.company + ref
         var url = await Firebase.storage.ref().child(REF).getDownloadURL()
         console.log(consol.FgGreen, 'Success download Storage', consol.Reset)
         return url

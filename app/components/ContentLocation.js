@@ -6,9 +6,19 @@ import Constants from "../constants/Constants"
 import InputText from './InputText'
 import PickeBorder from './PickerBorder'
 
-import FBController from  '../controllers/FirebaseController'
-
 var functions = Constants.FUNCTIONS
+
+const COUNTRIES = [
+    {
+        name: "Colombia",
+        departments: [
+            {
+                name: "Valle del cauca",
+                cities: [ { name: 'Buga'}, { name: 'Cali' }, { name: 'Palmira' }, { name: 'Yumbo'} ]
+            }
+        ]
+    }
+]
 
 const ContentLocation = ( props ) => {
     const { styles, trans } = CurrentScheme()
@@ -22,20 +32,14 @@ const ContentLocation = ( props ) => {
     }, [ currentValue, location, disabled ])
 
     async function loadCountries() {
-        await FBController.FS_ReadBy('COUNTRIES', 'enable', '==', true, 'ORIGIN')
-        .then((result)=>{ setCountries(result) })
-        .finally(()=>{  })
-        .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ContentLocation/loadCountries', error.message) })
+        setCountries(COUNTRIES)
     }
 
     async function loadDepartments(country) {
+        setCities([])
         location['country'] = country && country.name ? country.name : ''
         if(location.country){
-            var REF = location.country.toUpperCase()
-            await FBController.FS_ReadBy('COUNTRIES/'+REF+'/DEPARTMENTS', 'enable', '==', true, 'ORIGIN')
-            .then((result)=>{ setDepartaments(result) })
-            .finally(()=>{ callback(location) })
-            .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ContentLocation/loadDepartments', error.message) })
+            setDepartaments(country.departments ? country.departments : []) 
         } else{
             setDepartaments([])
             callback(location)
@@ -45,12 +49,7 @@ const ContentLocation = ( props ) => {
     async function loadCities(department) {
         location['department'] = department && department.name ? department.name : ''
         if(location.department){
-            var REF = location.country.toUpperCase()
-            var REF2 = functions.removeSpaces(location.department).toUpperCase()
-            await FBController.FS_ReadBy('COUNTRIES/'+REF+'/DEPARTMENTS/'+REF2+'/CITIES', 'enable', '==', true, 'ORIGIN')
-            .then((result)=>{ setCities(result) })
-            .finally(()=>{ callback(location) })
-            .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ContentLocation/loadCities', error.message) })
+            setCities(department.cities ? department.cities : [])
         } else{
             setCities([])
             callback(location)
@@ -93,7 +92,7 @@ const ContentLocation = ( props ) => {
                     values={cities}  
                     currentValue={currentValue ? currentValue.city : null}
                     onValueChange={(value) => location['city'] = value ? value.name : '' } 
-                    disabled={ (disabled || !location.department) ? true : false} 
+                    disabled={ (disabled || !location.department || !location.country) ? true : false} 
                     styles={[{width: '48%'}]}/>
                 <InputText
                     label={trans('postalCode')} type={'numeric'} 

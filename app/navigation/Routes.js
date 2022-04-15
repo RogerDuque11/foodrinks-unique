@@ -10,17 +10,18 @@ import CurrentScheme from '../constants/CurrentScheme'
 import More from '../screensOthers/MoreScreen'
 import Empty from '../screensOthers/EmptyScreen'
 import Help from '../screensOthers/HelpScreen'
+import HomeScreen from '../screensHome/Home'
 import Login from '../screensUser/LoginScreen'
 import Register from '../screensUser/RegisterScreen'
 import RestorePass from '../screensUser/RestorePassword'
 
 // SCREENS FOR ALL PARTNER
 import CreatePartner from '../screensPartner/CreatePartner'
-import ReadPartners from '../screensPartner/ReadPartners'
+import ReadPartner from '../screensPartner/ReadPartner'
 import UpdatePartner from '../screensPartner/UpdatePartner'
 
 import CreateCompany from '../screensCompany/CreateCompany'
-import ReadCompanies from '../screensCompany/ReadCompanies'
+import ReadCompany from '../screensCompany/ReadCompany'
 import UpdateCompany from '../screensCompany/UpdateCompany'
 
 import CreateLocal from '../screensLocal/CreateLocal'
@@ -115,18 +116,13 @@ const employeeScreens = (props) => {
     var screensStack = {
         UpdateCompany: { component: UpdateCompany, options:{ }, initialParams:{ } },
         UpdateLocal: { component: UpdateLocal, options:{ }, initialParams:{ } },
-
         OrdersDate: { component: OrdersDate, options:{ headerShown: false, presentation: 'modal' }, initialParams:{ } },
         CreateOrder: { component: CreateOrder, options:{ }, initialParams:{ } },
         UpdateOrder: { component: UpdateOrder, options:{ }, initialParams:{ } },
-        CreateTable: { component: CreateTable, options:{ }, initialParams:{ } },
-        UpdateTable: { component: UpdateTable, options:{ }, initialParams:{ } },
         UpdateProductLocal: { component: UpdateProductLocal, options:{ headerTransparent: true }, initialParams:{ } },
     }
     var screensChild2 = {
-        //create: { component: CreateOrder, iconName: 'clipboard-outline', iconLibrary: 'Ionicons', params: {AuthContext: AuthContext}},
         orders: { component: ReadOrders, iconName: 'clipboard-outline', iconLibrary: 'Ionicons', params: {AuthContext: AuthContext}},
-        //tables: { component: ReadOrdersTable, iconName: 'tablets', iconLibrary: 'Fontisto', params: {AuthContext: AuthContext}},
         places: { component: ReadOrdersPlace, iconName: 'fire', iconLibrary: 'SimpleLineIcons', params: {AuthContext: AuthContext}},
         deliveries: { component: ReadOrdersDelivery, iconName: 'bicycle', iconLibrary: 'Ionicons', params: {AuthContext: AuthContext}},
         payments: { component: ReadOrdersPay, iconName: 'payment', iconLibrary: 'MaterialIcons', params: {AuthContext: AuthContext}},
@@ -147,16 +143,12 @@ const waiterScreens = (props) => {
     var screensStack = {
         UpdateCompany: { component: UpdateCompany, options:{ }, initialParams:{ } },
         UpdateLocal: { component: UpdateLocal, options:{ }, initialParams:{ } },
-
         OrdersDate: { component: OrdersDate, options:{ headerShown: false, presentation: 'modal' }, initialParams:{ } },
         CreateOrder: { component: CreateOrder, options:{ }, initialParams:{ } },
         UpdateOrder: { component: UpdateOrder, options:{ }, initialParams:{ } },
-        CreateTable: { component: CreateTable, options:{ }, initialParams:{ } },
-        UpdateTable: { component: UpdateTable, options:{ }, initialParams:{ } },
     }
     var screensChild2 = {
         orders: { component: ReadOrders, iconName: 'clipboard-outline', iconLibrary: 'Ionicons', params: {AuthContext: AuthContext}},
-        //tables: { component: ReadOrdersTable, iconName: 'tablets', iconLibrary: 'Fontisto', params: {AuthContext: AuthContext}},
         places: { component: ReadOrdersPlace, iconName: 'fire', iconLibrary: 'SimpleLineIcons', params: {AuthContext: AuthContext}},
         deliveries: { component: ReadOrdersDelivery, iconName: 'bicycle', iconLibrary: 'Ionicons', params: {AuthContext: AuthContext}},
         payments: { component: ReadOrdersPay, iconName: 'payment', iconLibrary: 'MaterialIcons', params: {AuthContext: AuthContext}},
@@ -176,7 +168,6 @@ const cookScreens = (props) => {
     var screensStack = {
         UpdateCompany: { component: UpdateCompany, options:{ }, initialParams:{ } },
         UpdateLocal: { component: UpdateLocal, options:{ }, initialParams:{ } },
-        
         OrdersDate: { component: OrdersDate, options:{ headerShown: false, presentation: 'modal' }, initialParams:{ } },
     }
     var screensChild2 = {
@@ -197,7 +188,6 @@ const deliveryScreens = (props) => {
     var screensStack = {
         UpdateCompany: { component: UpdateCompany, options:{ }, initialParams:{ } },
         UpdateLocal: { component: UpdateLocal, options:{ }, initialParams:{ } },
-        
         OrdersDate: { component: OrdersDate, options:{ headerShown: false, presentation: 'modal' }, initialParams:{ } },
     }
     var screensChild2 = {
@@ -219,7 +209,6 @@ const adminScreens = (props) => {
     const screens = employeeScreens(props)
     var screensStack = {
         ...screens['screensStack'],
-        
         CreateRecipe: { component: CreateRecipe, options:{ }, initialParams:{ } },
         UpdateRecipe: { component: UpdateRecipe, options:{ }, initialParams:{ } },
         CreateProductLocal: { component: CreateProductLocal, options:{ headerTransparent: true }, initialParams:{ } },
@@ -277,11 +266,13 @@ const adminCompanyScreens = (props) => {
 
 const partnerScreens = (props) => {
     const {AuthContext} = props
-    const screens = adminCompanyScreens(props)
+    //const screens = adminCompanyScreens(props)
+    const screens = {}
     var screensStack = {
         ...screens['screensStack'],
-        CreateCompany: { component: CreateCompany, options:{ }, initialParams:{ } },
-        CreateLocal: { component: CreateLocal, options:{ }, initialParams:{ } },
+        //CreateCompany: { component: CreateCompany, options:{ }, initialParams:{ } },
+        //CreateLocal: { component: CreateLocal, options:{ }, initialParams:{ } },
+        UpdateLocal: { component: UpdateLocal, options:{ }, initialParams:{ } },
         CreateLetterMenu: { component: CreateLetterMenu, options:{ }, initialParams:{ } },
         UpdateLetterMenu: { component: UpdateLetterMenu, options:{ }, initialParams:{ } },
         CreateDepartment: { component: CreateDepartment, options:{ }, initialParams:{ } },
@@ -289,8 +280,8 @@ const partnerScreens = (props) => {
     }
     var screensChild = {
         ...screens['screensChild'],
-        //companies: { component: ReadCompanies, iconName: 'grid-outline', iconLibrary: 'Ionicons', params: { }},
-        //locals: { component: ReadLocals, iconName: 'storefront', iconLibrary: 'MaterialIcons', params: { }},
+        //company: { component: ReadCompany, iconName: 'grid-outline', iconLibrary: 'Ionicons', params: { }},
+        locals: { component: ReadLocals, iconName: 'file-tray-stacked-outline', iconLibrary: 'Ionicons', params: { }},
     }
     return { screensStack, screensChild }
 }
@@ -302,11 +293,19 @@ const rootScreens = (props) => {
     const screens = {}
     var screensStack = {
         ...screens['screensStack'],
+        CreateCompany: { component: CreateCompany, options:{ }, initialParams:{ } },
+        UpdateCompany: { component: UpdateCompany, options:{ }, initialParams:{ } },
+        CreateLocal: { component: CreateLocal, options:{ }, initialParams:{ } },
+        UpdateLocal: { component: UpdateLocal, options:{ }, initialParams:{ } },
+        CreatePlace: { component: CreatePlace, options:{ }, initialParams:{ } },
+        UpdatePlace: { component: UpdatePlace, options:{ }, initialParams:{ } },
+        ReadPlacesPreparation: { component: ReadPlaces, options:{ }, initialParams:{ } },
         CreateUser: { component: CreateUser, options:{ }, initialParams:{ } },
         UpdateUser: { component: UpdateUser, options:{ }, initialParams:{ } },
         CreatePartner: { component: CreatePartner, options:{ }, initialParams:{ } },
         UpdatePartner: { component: UpdatePartner, options:{ }, initialParams:{ } },
         CreateEmployee: { component: CreateEmployee, options:{ }, initialParams:{ } },
+        ReadEmployees: { component: ReadEmployees, options:{ }, initialParams:{ } },
         UpdateEmployee: { component: UpdateEmployee, options:{ }, initialParams:{ } },
         CreateTax: { component: CreateTax, options:{ }, initialParams:{ } },
         UpdateTax: { component: UpdateTax, options:{ }, initialParams:{ } },
@@ -315,11 +314,30 @@ const rootScreens = (props) => {
     }
     var screensChild = {
         ...screens['screensChild'],
-        partners: {component: ReadPartners, iconName: 'grid-outline', iconLibrary: 'Ionicons' },
-        users: {component: ReadUsers, iconName: 'people-outline', iconLibrary: 'Ionicons' },
-        taxes: {component: ReadTaxes, iconName: 'grid-outline', iconLibrary: 'Ionicons' },
+        home: { component: HomeScreen, iconName: 'storefront', iconLibrary: 'MaterialIcons' },
+        locals: { component: ReadLocals, iconName: 'file-tray-stacked-outline', iconLibrary: 'Ionicons', params: { }},
+        users: { component: ReadUsers, iconName: 'people-outline', iconLibrary: 'Ionicons' },
+        taxes: { component: ReadTaxes, iconName: 'grid-outline', iconLibrary: 'Ionicons' },
         measures: { component: ReadMeasures, iconName: 'balance-scale', iconLibrary: 'FontAwesome' },
     }
+
+    //CMENTAR BLOQUE PARA VERSION ANTERIOR
+    var screensChild2 = {
+        ...screens['screensChild'],
+        home: { component: HomeScreen, iconName: 'storefront', iconLibrary: 'MaterialIcons', params: {AuthContext: AuthContext} },
+        locals: { component: ReadLocals, iconName: 'file-tray-stacked-outline', iconLibrary: 'Ionicons', params: {AuthContext: AuthContext}},
+        users: { component: ReadUsers, iconName: 'people-outline', iconLibrary: 'Ionicons', params: {AuthContext: AuthContext}},
+        taxes: { component: ReadTaxes, iconName: 'grid-outline', iconLibrary: 'Ionicons', params: {AuthContext: AuthContext}},
+        measures: { component: ReadMeasures, iconName: 'balance-scale', iconLibrary: 'FontAwesome', params: {AuthContext: AuthContext}},
+    }
+    var screensChild3 = {
+        realtime: { component: NavigationBottom, iconName: 'grid-outline', iconLibrary: 'Ionicons',
+            options:{ headerShown: true },
+            params:{screens: screensChild2, AuthContext: AuthContext}
+        }
+    }
+    var screensChild = !CurrentScheme().isWeb ? screensChild3 : screensChild2
+    // FIN BLOQUE A COMENTAR
     return { screensStack, screensChild }
 }
 

@@ -19,7 +19,7 @@ const ReadRecipesScreen = ({route, navigation}) => {
 
     function getData(){
         var props = {
-            REFS: { COMPANIES: COMPANY.code, RECIPES: '' },
+            REFS: { COMPANY: COMPANY.code, RECIPES: '' },
             QUERIES: {  0: ['enable', '==', true] },
             ORDER: { name: 'asc' },
             LIMIT: 1

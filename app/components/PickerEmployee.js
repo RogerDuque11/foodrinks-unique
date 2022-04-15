@@ -12,9 +12,10 @@ const PickerEmployee = (props) => {
     const { labelFirst, label, color, background, callback, disabled, currentValue, nullable } = props
     
     const types = {
-        'ROOT': ['admin', 'cook', 'waiter', 'delivery'],
-        'PARTNER': ['admin', 'cook', 'waiter', 'delivery'],
-        'EMPLOYEE': ['admin', 'cook', 'waiter', 'delivery']
+        //'ROOT': ['admin', 'cook', 'accountant', 'delivery', 'waiter', 'supervisor'],
+        'ROOT': ['admin', 'cook', 'delivery', 'waiter'],
+        'PARTNER': ['admin', 'cook', 'delivery', 'waiter'],
+        'EMPLOYEE': ['admin', 'cook', 'delivery', 'waiter']
     }
     const values = types[PROFILE.usertype] ? types[PROFILE.usertype] : []
     const [ data, setData ] = useState(values)

@@ -67,8 +67,7 @@ const UpdateTaxScreen = ({route, navigation}) => {
     }
 
     const onPressDelete = () => {
-        copy['state'] = 'DELETED'
-        FBController.FS_Update('TAXES', copy.code, copy)
+        FBController.FS_Delete('TAXES', copy.code, 'ORIGIN')
         callbackItem('DELETE', copy, index)
         navigation.goBack(null)
     }

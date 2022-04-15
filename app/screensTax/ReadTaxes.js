@@ -19,7 +19,7 @@ const ReadTaxesScreen = ({route, navigation}) => {
 
     async function getData(){
         setLoading(true)
-        await FBController.FS_ReadBy('TAXES', 'state', '!=', 'DELETED')
+        await FBController.FS_Read('TAXES')
         .then((taxes)=>{ setData(taxes) })
         .finally(()=>{ setLoading(false) })
         .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ReadTaxes/getData', error.message) })

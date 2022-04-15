@@ -3,7 +3,7 @@ import Constants from '../constants/Constants'
 
 const verifyRef = (ORIGIN) => {
     const { PROFILE, COMPANY } = Constants.SESION
-    var REF_ST = 'COMPANIES/'
+    var REF_ST = 'COMPANY/'
     var CHILD = COMPANY ? COMPANY.code: ''
     //var CHILD = PROFILE.usertype === 'PARTNER' ? PROFILE.uid : ''
     var REF = ORIGIN || !CHILD  ? Firebase.storage.ref() : Firebase.storage.ref(REF_ST+CHILD)
@@ -114,8 +114,9 @@ class StorageController {
     }
 
     deleteData = async ({ref, id, ORIGIN}) => {
-        return verifyRef(ORIGIN).collection(ref).doc(id)
-        .delete()
+        
+        var REF =  verifyRef(ORIGIN).child(id)
+        deleteObject(REF)
         .then(function() {
             Constants.NOTIFY('SUCCESS', 'elementDeleted', ref, id)
         }).catch(function(error) {

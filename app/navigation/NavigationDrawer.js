@@ -5,10 +5,9 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 
 import CurrentScheme from '../constants/CurrentScheme'
 import Constants from "../constants/Constants"
-import LoadingScreen from '../components/LoadingScreen'
 import Icon from '../components/Icon'
 import Button from '../components/Button'
-import PickerCompany from '../components/PickerCompany'
+import LoadDataSesion from '../components/LoadDataSesion'
 import PickerLocal from '../components/PickerLocal'
 import EmptyScreen from '../screensOthers/EmptyScreen'
 import Avatar from '../components/Avatar'
@@ -17,33 +16,36 @@ import Avatar from '../components/Avatar'
 const Drawer = createDrawerNavigator();
 
 const NavigationDrawer = ({route, navigation}) =>{
-    const { PROFILE } = Constants.SESION
+    const { PROFILE, COMPANY } = Constants.SESION
     const { styles, colors, size, trans, isWebDesk, theme, scheme} = CurrentScheme()
     const itemColor = scheme == 'dark' ? colors.text : colors.background
 
     const [ screens, setScreens ] = useState(route.params.screens)
     const [ isLoading, setLoading ] = useState(false)
     const { LOG_OUT } = useContext(route.params.AuthContext)
-    const [ company, setCompany ] = useState(null)
-    const [ local, setLocal ] = useState(null)
+    
+    const [ dataSesion, setDataSesion ] = useState({ partner: null, company: null })
+    const [ local, setLocal ] = useState({})
+    const [ reload, setReload ] = useState(false)
     
     useEffect(() => {
-        if(isLoading || company){
+        if(isLoading || dataSesion.company || reload){
             setScreens(screens => Object.assign(screens, route.params.screens))
             setLoading(false)
+            setReload(false)
         }
-        Constants.SESION.COMPANY = company
-        Constants.SESION.LOCAL = local
-    }, [isLoading, company, local])
+        //Constants.SESION.PARTNER = dataSesion.partner
+        //Constants.SESION.COMPANY = dataSesion.company
+    }, [isLoading, dataSesion, local, reload])
 
     const showCompany = () => {
-        company ? navigation.navigate('UpdateCompany', {company: company, callbackUpdate: (company)=>setCompany(company)})
-        : navigation.navigate('CreateCompany', {callbackCreate: (company)=>setCompany(company) })
+        /* !dataSesion && dataSesion.company ? null : REVISAR CALLBACK dataSesion
+        navigation.navigate('UpdateCompany', {company: dataSesion.company, callbackUpdate: (company)=>setCompany(company)}) */
     }
 
     const showLocal = () => {
-        local ? navigation.navigate('UpdateLocal', {local: local, callbackUpdate: (local)=>setLocal(local)})
-        : navigation.navigate('CreateLocal', {callbackCreate: (local)=>setLocal(local) })
+        /* local ? navigation.navigate('UpdateLocal', {local: local, callbackUpdate: (local)=>setLocal(local)})
+        : navigation.navigate('CreateLocal', {callbackCreate: (local)=>setLocal(local) }) */
     }
 
     return (
@@ -68,10 +70,11 @@ const NavigationDrawer = ({route, navigation}) =>{
                     {...props} 
                     itemColor={itemColor} 
                     LOG_OUT={LOG_OUT} 
-                    company={company} 
+                    
+                    dataSesion={dataSesion} 
                     showCompany={showCompany} 
-                    selectCompany={(value)=>{
-                        setCompany(company=>({...company, ...value}))
+                    callbackDataSesion={(value)=>{
+                        setDataSesion(dataSesion=>({...dataSesion, ...value}))
                         setLoading(true)
                     }} 
                     local={local} 
@@ -85,13 +88,13 @@ const NavigationDrawer = ({route, navigation}) =>{
         >
                 
             {
-                screens && !isLoading && (PROFILE.usertype === 'ROOT' || (company && local)) ?
+                screens && !isLoading && !reload && (PROFILE.usertype === 'ROOT' || dataSesion) ?
                 Object.entries(screens).map(([key, props]) => ( 
                     <Drawer.Screen 
                         key={key} 
                         name={trans(key)} 
                         component={props.component} 
-                        initialParams={{ ...props.params }} 
+                        initialParams={{ ...props.params, setReload }} 
                         options={{ 
                             headerShown: true, 
                             headerStyle: /* isWebDesk ? null : */ styles.headerStyle, 
@@ -139,6 +142,8 @@ function CustomDrawerContent(props) {
     const { styles, colors, size, isWebDesk, trans} = CurrentScheme()
     const { PROFILE } = Constants.SESION
     const usertype = trans(PROFILE.usertype)
+
+    
     return (
         <DrawerContentScrollView {...props} style={styles.container} >
             {
@@ -153,40 +158,34 @@ function CustomDrawerContent(props) {
                 <Avatar 
                     rounded
                     size={size.iconLarge}  
-                    title={PROFILE.displayName[0] ? PROFILE.displayName[0] : 'USw'}
+                    title={PROFILE.displayName[0] ? PROFILE.displayName[0] : 'US'}
                     containerStyle={[ styles.bgPrimary, styles.borderFine ]}
                     source={ PROFILE.photoUrl ? {uri: PROFILE.photoUrl} : null} />
                 
                 <View style={[styles.marginSmall_L]}>
                     <Text style={[styles.textSmall, styles.textBold, styles.bgPrimary ]}>{PROFILE.displayName ? PROFILE.displayName : ' - '}</Text>
                     <Text style={[styles.textTiny, styles.bgPrimary ]}>{PROFILE.email ? PROFILE.email : ' - '}</Text>
+                    <View style={[styles.row, styles.justifyBetween ]}>
+                        <Text style={[ styles.textTiny, styles.bgPrimary, styles.uppercase ]}>{trans('company')}: </Text>
+                        <LoadDataSesion
+                            callbackDataSesion={(dataSesion)=>{ props.callbackDataSesion(dataSesion) }}
+                            styles={[ styles.textTiny, styles.borderNone, styles.bgPrimary, styles.flex, {marginTop: 0} ]} />
+                            {
+                                PROFILE.usertype !== 'ROOT' && props.dataSesion.company ?
+                                <Button 
+                                    iconRight
+                                    icon={ { color: props.itemColor, name:'chevron-right', library:'Feather', size: size.iconSmall }} 
+                                    buttonStyle={[ styles.paddingNone, styles.paddingTiny_X]}
+                                    onPress={ ()=>( props.showCompany()) } />
+                                : null
+                            }
+                        
+                    </View> 
                     {/* <Text style={[styles.textTiny, styles.bgPrimary ]}>{usertype}</Text> */}
                 </View>
             </View>
-
-
-
-            {
-                PROFILE.usertype !== 'ROOT' ?
-                <View style={[ styles.paddingSmall_X, styles.row, styles.justifyBetween, styles.alignCenter, styles.marginTiny_Y ]}>
-                    <Icon color={props.itemColor} size={size.iconSmall} library={'MaterialIcons'} name={'storefront'} />
-                    <Text style={[ styles.textSmall, styles.bgPrimary, styles.uppercase, {marginLeft: 32} ]}>{trans('company')}: </Text>
-                    <PickerCompany
-                        callback={(company)=>{ props.selectCompany(company) }}
-                        background={colors.primary} 
-                        color={props.itemColor}
-                        styles={[styles.borderNone, styles.flex, {marginTop: 0} ]}
-                        pickerStyle={[ ]} />
-                    <Button 
-                        iconRight
-                        title={ (PROFILE.usertype === 'PARTNER' && !props.company) ? trans('companyCreate') : null }
-                        icon={ (PROFILE.usertype === 'PARTNER' && !props.company) ? null: { color: props.itemColor, name:'chevron-right', library:'Feather', size: size.iconSmall }} 
-                        buttonStyle={[ styles.paddingNone, styles.paddingTiny_X]}
-                        onPress={ ()=>( props.showCompany()) } />
-                </View>
-                : null
-            }
-            {
+            
+            {/* {
                 PROFILE.usertype !== 'ROOT' && props.company ?
                 <View style={[ styles.paddingSmall_X, styles.row, styles.justifyBetween, styles.alignCenter, styles.marginTiny_Y ]}>
                     <Icon color={props.itemColor} size={size.iconSmall} library={'MaterialIcons'} name={'storefront'} />
@@ -205,7 +204,7 @@ function CustomDrawerContent(props) {
                         onPress={ ()=>( props.showLocal()) } />
                 </View>
                 : null
-            }
+            } */}
             
             <DrawerItemList {...props} />
             

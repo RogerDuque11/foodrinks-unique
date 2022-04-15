@@ -29,7 +29,7 @@ const UpdateProductScreen = ({route, navigation}) => {
         selectLocal: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER'
         || (PROFILE.position === 'ADMIN' && !PROFILE.localCode ) ? true : false
     }
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
 
     const updateHeader = () => {
         const title = update ? 'productEdit' : 'productDetails'
@@ -59,7 +59,7 @@ const UpdateProductScreen = ({route, navigation}) => {
             try {
                 setLoading(true)
                 setUpdate(false)
-                var ref = 'COMPANIES/'+LOCAL.companyCode+'/PRODUCTS/'+product.code
+                var ref = 'COMPANY/'+LOCAL.companyCode+'/PRODUCTS/'+product.code
                 if(copy.photoUrl !== product.photoUrl){
                     copy.photoUrl = await FBController.ST_Upload(ref, copy.photoUrl, 'ORIGIN')
                 } 

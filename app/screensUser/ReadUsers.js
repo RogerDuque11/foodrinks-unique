@@ -26,19 +26,19 @@ const ReadUsersScreen = ({route, navigation}) => {
         if (PROFILE && PROFILE.usertype === 'ROOT'){
             setLoading(true)
             await FBController.FS_ReadBy('USERS', 'uid', '!=', PROFILE.uid, 'ORIGIN')
-            .then((companies)=>{ setData(companies) })
+            .then((company)=>{ setData(company) })
             .finally(()=>{ setLoading(false) })
             .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ReadUsers/getData', error.message) })
         } else if (PROFILE && PROFILE.usertype === 'PARTNER'){
             setLoading(true)
             await FBController.FS_ReadBy('USERS', 'partnerUid', '==', PROFILE.uid, 'ORIGIN')
-            .then((companies)=>{ setData(companies) })
+            .then((company)=>{ setData(company) })
             .finally(()=>{ setLoading(false) })
             .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ReadUsers/getData', error.message) })
         } else {
             setLoading(true)
             await FBController.FS_ReadBy('USERS', 'partnerUid', '==', PROFILE.partnerUid, 'ORIGIN')
-            .then((companies)=>{ setData(companies) })
+            .then((company)=>{ setData(company) })
             .finally(()=>{ setLoading(false) })
             .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ReadUsers/getData', error.message) })
         }

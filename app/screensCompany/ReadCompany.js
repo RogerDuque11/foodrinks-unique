@@ -10,7 +10,7 @@ import FlatList from '../components/CustomFlatList'
 import FBController from  '../controllers/FirebaseController'
 
 
-const ReadCompaniesScreen = ({route, navigation}) => {
+const ReadCompanyScreen = ({route, navigation}) => {
     const { PROFILE } = Constants.SESION
     const { styles, colors, trans } = CurrentScheme()
 
@@ -19,16 +19,16 @@ const ReadCompaniesScreen = ({route, navigation}) => {
 
     async function getData(){
         setLoading(true)
-        await FBController.FS_ReadBy('COMPANIES', 'state', '!=', 'DELETED')
-        .then((companies)=>{ setData(companies) })
+        await FBController.FS_ReadBy('COMPANY', 'state', '!=', 'DELETED')
+        .then((company)=>{ setData(company) })
         .finally(()=>{ setLoading(false) })
-        .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ReadCompanies/getData', error.message) })
+        .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ReadCompany/getData', error.message) })
     }
     
     useLayoutEffect(() => {
         const right = { icon: 'plus', color: colors.accent }
         navigation.setOptions({
-          title: trans('companies'),
+          title: trans('company'),
           headerRight: ()=>( <HeaderRight params={right} onPressRight={()=>launchScreen('CreateCompany', {callbackItem: callbackItem})}/> )
         });
     }, [navigation]);
@@ -99,4 +99,4 @@ const PlatformList = ({ props }) => {
 
 
 
-export default ReadCompaniesScreen
+export default ReadCompanyScreen

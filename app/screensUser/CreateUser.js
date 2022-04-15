@@ -78,6 +78,7 @@ const CreateUserScreen = ({route, navigation}) => {
         try {
             setLoading(true)
             await FBController.FS_Create('USERS', profile.uid, profile, 'ORIGIN')
+            callbackItem ? callbackItem(profile) : null //return to view read
             setLoading(false)
             navigation.goBack(null)
         } catch (error) {
@@ -126,11 +127,11 @@ const CreateUserScreen = ({route, navigation}) => {
                         
                     <View style={[ styles.row, styles.justifyBetween ]}>
                         <InputText
-                            tag={trans('password')} type={'default'} secure={true}
+                            tag={trans('password')} type={'numeric'} secure={true}
                             onChangeText={(text) => user.password = text }
                             containerStyle={[{width: '48%'}]} />
                         <InputText
-                            tag={trans('passwordConfirm')} type={'default'} secure={true}
+                            tag={trans('passwordConfirm')} type={'numeric'} secure={true}
                             onChangeText={(text) => user.passwordConfirm = text }
                             containerStyle={[{width: '48%'}]} />
                     </View>

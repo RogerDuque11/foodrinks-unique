@@ -4,18 +4,14 @@ export default class Measure{
 
     constructor(){
         this.code = ''
-        this.details = ''
-        this.enable = true
+        this.key = ''
         this.name = ''
-        this.state = ''
     }
 
     setValuesFromObject = (from, to) => {
         from['code'] = to.code
-        from['details'] = to.details
-        from['enable'] = to.enable
+        from['key'] = to.key
         from['name'] = to.name
-        from['state'] = to.state
     }
     
 }

@@ -19,7 +19,7 @@ const ReadSuppliesScreen = ({route, navigation}) => {
 
     function getData(){
         var props = {
-            REFS: { COMPANIES: COMPANY.code, SUPPLIES: '' },
+            REFS: { COMPANY: COMPANY.code, SUPPLIES: '' },
             QUERIES: {  0: ['enable', '==', true] },
             ORDER: { name: 'asc' },
             LIMIT: 1

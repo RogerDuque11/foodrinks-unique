@@ -23,8 +23,8 @@ const ShowUserScreen = ({route, navigation}) => {
     const [ copy, setCopy ] = useState({...user})
     const [ update, setUpdate ] = useState(false)
     
-    const [usertypes, setUserTypes] = useState({ 0:'profile', admins:'admin', customers:'customer', companies:'company', technicals:'technical', sellers:'seller' })
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const [usertypes, setUserTypes] = useState({ 0:'profile', admins:'admin', customers:'customer', company:'company', technicals:'technical', sellers:'seller' })
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
     const permissions = {
         userConfirmed: copy.state === 'PENDING' ? false : true,
     }

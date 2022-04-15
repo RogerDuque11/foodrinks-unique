@@ -3,13 +3,9 @@ import Constants from '../constants/Constants'
 
 const verifyRef = (ORIGIN) => {
     const { PROFILE, COMPANY, LOCAL } = Constants.SESION
-    var REF_ORIGIN = ORIGIN && ORIGIN !== 'ORIGIN' ? 
-                Firebase.firestore.collection(ORIGIN.REF) 
-                : null
-    var REF_FS = REF_ORIGIN ? REF_ORIGIN : Firebase.firestore.collection('COMPANIES')
-    var CHILD = REF_ORIGIN && ORIGIN.CHILD ? 
-                ORIGIN.CHILD
-                : COMPANY ? COMPANY.code : ''
+    var REF_ORIGIN = ORIGIN && ORIGIN !== 'ORIGIN' ? Firebase.firestore.collection(ORIGIN.REF) : null
+    var REF_FS = REF_ORIGIN ? REF_ORIGIN : Firebase.firestore
+    var CHILD = REF_ORIGIN && ORIGIN.CHILD ? ORIGIN.CHILD : ''
     /* var CHILD = PROFILE.usertype === 'PARTNER' ? PROFILE.uid 
                 : PROFILE.usertype === 'EMPLOYEE' ? PROFILE.partnerUid 
                 : '' */
@@ -47,18 +43,21 @@ class FirestoreController {
     readData = ({REFS, QUERIES, ORDER, LIMIT}) => {
         var data = []
         var db = Firebase.firestore
-            Object.entries(REFS).map(([key, child]) => {
+            !REFS || Object.keys(REFS).length <= 0 ? null
+            : Object.entries(REFS).map(([key, child]) => {
                 db = key ? db.collection(key) : db
                 db = child ? db.doc(child) : db
             })
-            Object.entries(QUERIES).map(([key, query]) => {
+            !QUERIES || Object.keys(QUERIES).length <= 0 ? null
+            : Object.entries(QUERIES).map(([key, query]) => {
                 db = query ? db.where(query[0], query[1], query[2]) : db
             })
-            Object.entries(ORDER).map(([key, order]) => {
+            !ORDER || Object.keys(ORDER).length <= 0 ? null
+            : Object.entries(ORDER).map(([key, order]) => {
                 db = key ? db.orderBy(key, order ? order : 'asc') : db
             })
             //LIMIT ? db.limit(LIMIT) : null
-        /* db.onSnapshot( snapshot => {
+        /* return db.onSnapshot( snapshot => {
             snapshot.forEach(doc =>{ data.push(doc.data()) })
         }) */
         return db

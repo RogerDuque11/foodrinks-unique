@@ -7,7 +7,6 @@ import Header from '../components/Header'
 import LoadingScreen from '../components/LoadingScreen'
 import InputText from '../components/InputText'
 import Switch from '../components/Switch'
-import PickerPartner from '../components/PickerPartner'
 import PickerImage from '../components/PickerImage'
 import PickeBorder from '../components/PickerBorder'
 import Button from '../components/Button'
@@ -23,7 +22,7 @@ const UpdateCompanyScreen = ({route, navigation}) => {
     const [ isLoading, setLoading ] = useState(false)
     const [ copy, setCopy ] = useState({...company})
     const [ update, setUpdate ] = useState(false)
-    const partner = copy.partner ? {displayName: copy.partner, uid: copy.partnerUid} : null
+
     const permissions = {
         update: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' ? true : false ,
         delete: PROFILE.usertype === 'ROOT' ? true : false,
@@ -32,7 +31,7 @@ const UpdateCompanyScreen = ({route, navigation}) => {
     }
 
     const [regime, setRegime] = useState([ 'Común', 'Simplificado', 'Ninguno' ])
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
 
     const updateHeader = () => {
         const title = update ? 'companyEdit' : 'companyDetails'
@@ -63,11 +62,11 @@ const UpdateCompanyScreen = ({route, navigation}) => {
             try {
                 setLoading(true)
                 //setUpdate(false)
-                var ref = 'COMPANIES/'+company.code+'/logo'
+                var ref = 'COMPANY/logo'
                 if(company.logo !== copy.logo){
-                    copy.logo = await FBController.ST_Upload(ref, copy.logo, 'ORIGIN')
+                    copy.logo = copy.logo !== null ? await FBController.ST_Upload(ref, copy.logo, 'ORIGIN') : null
                 } 
-                await FBController.FS_Update('COMPANIES', copy.code, copy, 'ORIGIN')
+                await FBController.FS_Update('COMPANY', 'CURRENT', copy, 'ORIGIN')
                 new Company().setValuesFromObject(company, copy)
                 callbackUpdate(copy, index)
                 setLoading(false)
@@ -87,7 +86,7 @@ const UpdateCompanyScreen = ({route, navigation}) => {
 
     const onPressDelete = () => {
         copy['state'] = 'DELETED'
-        FBController.FS_Update('COMPANIES', copy.code, copy, 'ORIGIN')
+        FBController.FS_Update('COMPANY', copy.code, copy, 'ORIGIN')
         callbackUpdate('DELETE', copy, index)
         navigation.goBack(null)
     }
@@ -110,21 +109,6 @@ const UpdateCompanyScreen = ({route, navigation}) => {
                             quality={0.7}
                             containerStyle={ !update ? [ styles.borderNone ] : [ styles.borderFine ] } />
                     </View>
-                    
-                    {
-                        permissions.selectPartner ?
-                        <PickerPartner 
-                            label={trans('partner')} 
-                            labelFirst={'select'} 
-                            currentValue={partner}
-                            callback={ (value) => {
-                                copy.partner = (value && value.uid ? value.displayName : '')
-                                copy.partnerUid = (value && value.uid ? value.uid : '')
-                            } } />
-                        : <InputText
-                            tag={trans('partner')} type={'default'} editable={false}
-                            value={partner ? (partner.displayName).toString() : ''}/>
-                    }
 
                     <View style={[ styles.row, styles.justifyBetween ]}>
                         <PickeBorder 
@@ -160,7 +144,7 @@ const UpdateCompanyScreen = ({route, navigation}) => {
                         onChangeText={(text) => copy.phoneNumber = text } />
 
                     {
-                        PROFILE.companytype === 'ROOT' ?
+                        PROFILE.usertype === 'ROOT' ?
                         <View style={[ styles.row, styles.paddingSmall_Y, styles.justifyBetween ]}>
                             <Text style={[ styles.colorText, styles.paddingTiny_X ]}>{trans('enabled')}</Text>
                             <Switch value={copy.enable} color={colors.primary} onValueChange={(value) => copy.enable = value }></Switch>

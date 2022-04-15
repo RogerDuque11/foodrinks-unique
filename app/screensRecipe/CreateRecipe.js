@@ -22,7 +22,7 @@ const CreateRecipeScreen = ({route, navigation}) => {
     const { styles, colors, size, trans } = CurrentScheme()
     const [ isLoading, setLoading ] = useState(false)
     const [ recipe, setRecipe ] = useState(new Recipe())
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
 
     const permissions = {
         selectLocal: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER'
@@ -51,7 +51,7 @@ const CreateRecipeScreen = ({route, navigation}) => {
         if( ! exceptionsValidate && LOCAL.companyCode ){
             try {
                 setLoading(true)
-                var ref = 'COMPANIES/'+LOCAL.companyCode+'/RECIPES/'+recipe.code
+                var ref = 'COMPANY/'+LOCAL.companyCode+'/RECIPES/'+recipe.code
                 if(recipe.photoUrl){
                     recipe.photoUrl = await FBController.ST_Upload(ref, recipe.photoUrl, 'ORIGIN')
                 } 

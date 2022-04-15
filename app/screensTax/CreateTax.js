@@ -11,8 +11,8 @@ import LoadingScreen from '../components/LoadingScreen'
 import FBController from  '../controllers/FirebaseController'
 import Tax from  '../models/Tax'
 
-var functions = Constants.FUNCTIONS
-var DateFormat = functions.DateFormat
+const _F = Constants.FUNCTIONS
+var DateFormat = _F.DateFormat
 
 const CreateTaxScreen = ({route, navigation}) => {
     const { PROFILE } = Constants.SESION
@@ -22,8 +22,7 @@ const CreateTaxScreen = ({route, navigation}) => {
     const [ tax, setTax ] = useState(new Tax())
 
     var date = new Date()
-    tax.code = DateFormat.code(date)
-    tax.detail = DateFormat.dateNew(date)
+    tax.detail = DateFormat.date(date)
     
     useLayoutEffect(() => {
         const left  = { icon: 'close', color: colors.text }
@@ -41,7 +40,9 @@ const CreateTaxScreen = ({route, navigation}) => {
         var exceptionsValidate = validation(tax)
         if( ! exceptionsValidate ){
             try {
+                tax.author = PROFILE.displayName
                 tax.name = (tax.name).toUpperCase()
+                tax.code = _F.createKey(tax.name)
                 await FBController.FS_Create('TAXES', tax.code, tax)
                 tax.enable ? callbackItem('CREATE', tax) : null
                 navigation.goBack(null)
@@ -62,9 +63,6 @@ const CreateTaxScreen = ({route, navigation}) => {
             <View style={[ styles.container, styles.alignCenter ]}>
                 { isLoading ? <LoadingScreen loading={isLoading} size={'large'} color={colors.primary} />
                 : <View style={[ styles.column, styles.paddingMedium_X, styles.widthForm, styles.marginMedium_B ]}>
-                    <InputText
-                        tag={trans('code')} type={'default'} editable={false}
-                        value={(tax.code).toString()} />
                     <InputText
                         tag={trans('name')} type={'default'}
                         onChangeText={(text) => tax.name = text } />

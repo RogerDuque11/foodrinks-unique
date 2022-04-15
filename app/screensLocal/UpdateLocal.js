@@ -7,15 +7,15 @@ import Header from '../components/Header'
 import LoadingScreen from '../components/LoadingScreen'
 import InputText from '../components/InputText'
 import Switch from '../components/Switch'
-import PickerCompany from '../components/PickerCompany'
-import PickerPartner from '../components/PickerPartner'
 import PickerImage from '../components/PickerImage'
 import ContentLocation from '../components/ContentLocation'
 import Button from '../components/Button'
+import OptionsLocal from './OptionsLocal'
 
 import FBController from  '../controllers/FirebaseController'
 import Local from  '../models/Local'
 
+var _F = Constants.FUNCTIONS
 
 const UpdateLocalScreen = ({route, navigation}) => {
     const { PROFILE, COMPANY } = Constants.SESION
@@ -24,18 +24,15 @@ const UpdateLocalScreen = ({route, navigation}) => {
     const [ isLoading, setLoading ] = useState(false)
     const [ copy, setCopy ] = useState({...local})
     const [ update, setUpdate ] = useState(false)
-
-    const partner = copy.partner ? {displayName: copy.partner, uid: copy.partnerUid} : null
-    const company = copy.company ? {name: copy.company, code: copy.companyCode} : null
     
     const permissions = {
+        showOptions: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' 
+        || (PROFILE.position === 'ADMIN' && !PROFILE.placeCode) ? true : false ,
         update: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' 
         || (PROFILE.position === 'ADMIN' && !PROFILE.placeCode) ? true : false ,
         delete: PROFILE.usertype === 'ROOT'? true : false ,
-        selectPartner: PROFILE.usertype === 'ROOT' ? true : false,
-        selectCompany: PROFILE.usertype === 'ROOT' ? true : false,
     }
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
 
     const updateHeader = () => {
         const title = update ? 'localEdit' : 'localDetails'
@@ -67,9 +64,9 @@ const UpdateLocalScreen = ({route, navigation}) => {
             try {
                 setLoading(true)
                 setUpdate(false)
-                var ref = 'COMPANIES/'+local.companyCode+'/LOCALS/'+local.code+'/'
+                var ref = 'COMPANY/cover_'+local.code
                 if(local.imageCover !== copy.imageCover){
-                    copy.imageCover = await FBController.ST_Upload(ref+'cover', copy.imageCover, 'ORIGIN')
+                    copy.imageCover = await FBController.ST_Upload(ref, copy.imageCover, 'ORIGIN')
                 }
                 if(local.imageLogo !== copy.imageLogo){
                     copy.imageLogo = await FBController.ST_Upload(ref+'logo', copy.imageLogo, 'ORIGIN')
@@ -117,54 +114,24 @@ const UpdateLocalScreen = ({route, navigation}) => {
                             containerStyle={[styles.imageMedium, styles.imageCover, styles.bgCard ]} />
                         <PickerImage 
                             imageRounded
-                            imageUri={copy.imageLogo}
+                            imageUri={COMPANY.logo}
                             aspectImage={size.aspectAvatar}
                             imageSize={size.imageSmall}
-                            callback={ !update? null : (uri)=> copy.imageLogo = uri }
+                            callback={ null }
                             imageWidth={imageWidth}
                             quality={0.7}
-                            containerStyle={ !update ? [ styles.borderNone ] : [ styles.borderFine ], {marginTop: -size.imageSmall/2 }} />
+                            containerStyle={[ styles.borderFine, {marginTop: -size.imageSmall/2, borderWidth: 2 }]} />
                     </View>
-                    
-                    {
-                        permissions.selectPartner ?
-                        <PickerPartner 
-                            label={trans('partner')} 
-                            labelFirst={'select'} 
-                            currentValue={partner}
-                            callback={ (value) => {
-                                copy.partner = (value && value.uid ? value.displayName : '')
-                                copy.partnerUid = (value && value.uid ? value.uid : '')
-                            } } />
-                        : null
-                    }
-                    {
-                        permissions.selectCompany ? 
-                        <PickerCompany 
-                            label={trans('company')} 
-                            labelFirst={'select'} 
-                            currentValue={company}
-                            callback={ (value) => {
-                                copy.company = (value && value.code ? value.name : '')
-                                copy.companyCode = (value && value.code ? value.code : '')
-                            } } />
-                        : null
-                    }
-                    {
-                        PROFILE.usertype === 'ROOT' ? null :
-                        <Text style={[ styles.textInfo, styles.textCenter]}>
-                            {local.partner+'/'+local.company+'\n'+local.code}
-                        </Text>
-                    }
 
-                    <InputText
-                        tag={trans('name')} type={'default'} editable={update}
-                        value={(copy.name).toString()}
-                        onChangeText={(text) => copy.name = text } />
-                    <InputText
-                        tag={trans('details')} type={'default'} editable={update}
-                        value={(copy.details).toString()}
-                        onChangeText={(text) => copy.details = text } />
+                    <View style={[ styles.row, styles.justifyBetween ]}>
+                        <InputText
+                            tag={trans('company')} type={'default'} containerStyle={[ {width: '48%'}]}
+                            value={(COMPANY.name).toString()} editable={false} />
+                        <InputText
+                            tag={trans('local')} type={'default'} containerStyle={[ {width: '48%'}]} editable={update}
+                            value={(copy.name).toString()}
+                            onChangeText={(text) => copy.name = text } />
+                    </View>
                     <InputText
                         tag={trans('email')} type={'email-address'} editable={update}
                         value={(copy.email).toString()}
@@ -195,6 +162,12 @@ const UpdateLocalScreen = ({route, navigation}) => {
                                 onPress={onPressDelete} 
                             /> 
                         </> : null
+                    }
+
+                    {
+                        !update && permissions.showOptions ? 
+                            <OptionsLocal props={{ local, navigation }} />
+                        : null
                     }
                     
                 </View> 

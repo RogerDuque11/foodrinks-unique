@@ -29,7 +29,7 @@ const UpdateProductLocalScreen = ({route, navigation}) => {
         update: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' || PROFILE.position === 'ADMIN' ? true : false ,
         selectCompany: PROFILE.usertype === 'ROOT' ? true : false
     }
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
 
     const updateHeader = () => {
         const title = update ? 'productLocalEdit' : 'productLocalDetails'
@@ -60,7 +60,7 @@ const UpdateProductLocalScreen = ({route, navigation}) => {
         if( ! exceptionsValidate && LOCAL.companyCode ){
             try {
                 setLoading(true)
-                /* var ref = 'COMPANIES/'+LOCAL.companyCode+'/LOCALS/'+LOCAL.code+'/PRODUCTSLOCAL/'+productLocal.code+'/'
+                /* var ref = 'COMPANY/'+LOCAL.companyCode+'/LOCALS/'+LOCAL.code+'/PRODUCTSLOCAL/'+productLocal.code+'/'
                 if(copy.images.image1 !== productLocal.images.image1){
                     copy.images.image1 = await FBController.ST_Upload(ref+'image1', copy.images.image1, {REF: 'LOCALS', CHILD: LOCAL.code})
                 }  */

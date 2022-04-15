@@ -21,7 +21,7 @@ const UpdatePartnerScreen = ({route, navigation}) => {
     const [ isLoading, setLoading ] = useState(false)
     const [ copy, setCopy ] = useState({...partner})
     const [ update, setUpdate ] = useState(false)
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
     const privileges = {
         update: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' || PROFILE.usertype === 'ADMIN' ? true : false ,
         selectCompany: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' || PROFILE.usertype === 'ADMIN' ? true : false
@@ -61,7 +61,7 @@ const UpdatePartnerScreen = ({route, navigation}) => {
                 if(copy.photoUrl !== partner.photoUrl){
                     copy.photoUrl = await FBController.ST_Upload(ref, copy.photoUrl, 'ORIGIN')
                 } 
-                await FBController.FS_Update('PARTNERS', copy.uid, copy)
+                await FBController.FS_Update('PARTNER', 'CURRENT', copy)
                 await FBController.FS_Update('USERS', copy.uid, { displayName: copy.displayName, photoUrl: copy.photoUrl, phoneNumber: copy.phoneNumber, state: 'UPDATED' }, 'ORIGIN')
                 new Partner().setValuesFromObject(partner, copy)
                 callbackItem('UPDATE', copy, index)

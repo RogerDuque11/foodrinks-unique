@@ -22,13 +22,8 @@ const PickerLocal = (props) => {
     }, [ currentValue, disabled, COMPANY, LOCAL ])
 
     async function loadLocals() {
-        if(companyCode && localCode){
-            await FBController.FS_ReadByTwo('LOCALS', 'enable', '==', true, 'code', '==', localCode, 'ORIGIN')
-            .then((result)=>{ setData(result) })
-            .finally(()=>{  })
-            .catch(error => { Constants.NOTIFY('ERROR', error.code, 'PickerLocal/loadLocals', error.message) })
-        }else if(companyCode ){
-            await FBController.FS_ReadByTwo('LOCALS', 'enable', '==', true, 'companyCode', '==', companyCode, 'ORIGIN')
+        if(COMPANY && COMPANY.enable){
+            await FBController.FS_ReadBy('LOCALS', 'enable', '==', true, 'ORIGIN')
             .then((result)=>{ setData(result) })
             .finally(()=>{  })
             .catch(error => { Constants.NOTIFY('ERROR', error.code, 'PickerLocal/loadLocals', error.message) })

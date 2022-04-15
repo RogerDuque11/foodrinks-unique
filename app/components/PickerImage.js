@@ -38,7 +38,7 @@ const CustomImagePicker = (props) => {
   } 
 
   const cancelImage = () => {
-    //setImage(null)
+    setImage('')
     callback(null)
   }
 

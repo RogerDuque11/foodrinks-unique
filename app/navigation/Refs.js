@@ -15,14 +15,13 @@ export default function References() {
     const REFS = {
         ROOT: 'USERS',
         PARTNER: 'PARTNERS',
-        EMPLOYEE: 'COMPANIES/'+COMPANY?COMPANY.code:''+'/EMPLOYEES',
-        EMPLOYEES: 'COMPANIES/'+COMPANY?COMPANY.code:''+'/EMPLOYEES',
-        COMPANY: 'COMPANIES',
-        COMPANIES: 'COMPANIES',
+        EMPLOYEE: 'COMPANY/'+COMPANY?COMPANY.code:''+'/EMPLOYEES',
+        EMPLOYEES: 'COMPANY/'+COMPANY?COMPANY.code:''+'/EMPLOYEES',
+        COMPANY: 'COMPANY',
+        COMPANY: 'COMPANY',
         CUSTOMER: 'CUSTOMERS',
     }
     const ref = (REF, ORIGIN) => {
-        console.log(REF)
         var result = ORIGIN ? REF : (REF && REFS[REF]) ? REFS[REF] : null
         return result
     }

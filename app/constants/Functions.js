@@ -15,6 +15,9 @@ class Functions  {
         return value.replace(/\ /g, '')
     }
 
+    createKey = (value) => {
+        return value.replace(/\ /g, '').toUpperCase()
+    }
     
     getUidFromEmail = (email) => {
         const uid = email.replace(/\./g, '_')

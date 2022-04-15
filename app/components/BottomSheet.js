@@ -15,7 +15,6 @@ const CustomBottomSheet = (props) => {
 
   const onValueChange = (value, index) => {
     setSelectedValue(value)
-    console.log(labelFirst)
     if(index === 0 && labelFirst){
       setColorText(colors.default)
       props.onValueChange(null)

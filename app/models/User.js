@@ -10,7 +10,6 @@ export default class User{
         this.disabled = false
         this.usertype = ''
         this.state = 'PENDING'
-        this.partnerUid = ''
     }
 
     setValuesFromObject = (from, to) => {
@@ -23,7 +22,6 @@ export default class User{
         from['disabled'] = to.disabled
         from['usertype'] = to.usertype
         from['state'] = to.state
-        from['partnerUid'] = to.partnerUid
     }
 
     userFromObject(object){
@@ -37,7 +35,6 @@ export default class User{
             disabled: object.disabled,
             state: object.state,
             usertype: object.usertype,
-            partnerUid: object.partnerUid,
             companyCode: object.companyCode
         }
     }

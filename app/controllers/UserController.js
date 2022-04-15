@@ -21,8 +21,7 @@ class UserController {
             if(credential.user){
                 var uid = credential.user.uid
                 var profile = await getUserProfile(uid)
-                Constants.NOTIFY('SUCCESS', 'LOGIN', '', user.email)
-                //console.log(profile)
+                Constants.NOTIFY('SUCCESS', 'LOGIN', '', user.email)    
                 LOG_IN(profile)
             }
             return credential
@@ -95,8 +94,8 @@ const getUserProfile = async (uid) => {
 
 const getUserRef = (user) => {
     var usertype = user.usertype
-    var ref = usertype === 'PARTNER' ? Firebase.firestore.doc('PARTNERS/' + user.uid)
-    : usertype === 'EMPLOYEE' ? Firebase.firestore.doc('COMPANIES/'+ user.companyCode+'/EMPLOYEES/' + user.uid)
+    var ref = usertype === 'PARTNER' ? Firebase.firestore.doc('PARTNER/' + 'CURRENT')
+    : usertype === 'EMPLOYEE' ? Firebase.firestore.doc('COMPANY/'+ user.companyCode+'/EMPLOYEES/' + user.uid)
     : usertype === 'ROOT' ? Firebase.firestore.doc('USERS/' + user.uid)
     : null
     return ref
@@ -104,8 +103,8 @@ const getUserRef = (user) => {
 
 const getRef = (user) => {
     var usertype = user.usertype
-    var ref = usertype === 'PARTNER' ? 'PARTNERS/'
-    : usertype === 'EMPLOYEE' ? 'COMPANIES/'+user.companyCode+'/EMPLOYEES/'
+    var ref = usertype === 'PARTNER' ? 'PARTNER/'
+    : usertype === 'EMPLOYEE' ? 'EMPLOYEES/'
     : usertype === 'ROOT' ? 'USERS/'
     : null
     return ref
@@ -133,10 +132,11 @@ const registerUser = async (user, LOG_IN) => {
                 await FirebaseController.FS_Delete('USERS', uidTemp, 'ORIGIN')
 
                 var ref = getRef(usernew)
+                var uid = usernew.usertype === 'PARTNER' ? 'CURRENT' : usernew.uid
                 //var ref = refs(usernew.usertype)
                 delete usernew['password']
                 delete usernew['disabled']
-                await FirebaseController.FS_Create(ref, usernew.uid, usernew, 'ORIGIN')
+                await FirebaseController.FS_Create(ref, uid, usernew, 'ORIGIN')
 
                 //var profile = await getUserProfile(usernew.uid)
                 Constants.NOTIFY('SUCCESS', 'auth/user-created', 'UserController/registerUser', usernew.email)

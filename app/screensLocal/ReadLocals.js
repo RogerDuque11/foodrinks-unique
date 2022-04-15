@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
-import { RefreshControl } from 'react-native'
+import { RefreshControl, Text } from 'react-native'
 
 import CurrentScheme from "../constants/CurrentScheme"
 import Constants from "../constants/Constants"
@@ -11,27 +11,26 @@ import FBController from  '../controllers/FirebaseController'
 
 
 const ReadLocalsScreen = ({route, navigation}) => {
-    const { PROFILE, COMPANY } = Constants.SESION
+    const { PROFILE } = Constants.SESION
     const { styles, colors, trans } = CurrentScheme()
 
     const [isLoading, setLoading] = useState(true)
     const [data, setData] = useState([])
-    const privileges = {
-        create: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' || PROFILE.position === 'ADMIN' ? true : false
+
+    const permissions = {
+        create: PROFILE.usertype === 'ROOT' ? true : false,
+        read: (PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER') ? true : false,
     }
 
-    async function getData(){
+    function getData(){
         setLoading(true)
-        if(COMPANY && COMPANY.code){
-            await FBController.FS_ReadByTwo('LOCALS', 'enable', '==', true, 'companyCode', '==', COMPANY.code, 'ORIGIN')
+        if(Constants.SESION.COMPANY && Constants.SESION.COMPANY.name){
+            FBController.FS_ReadBy('LOCALS', 'enable', '==', true, 'ORIGIN')
             .then((locals)=>{ setData(locals) })
             .finally(()=>{ setLoading(false) })
             .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ReadLocals/getData', error.message) })
-        } else {
-            await FBController.FS_ReadBy('LOCALS', 'enable', '==', true, 'ORIGIN')
-            .then((locals)=>{ setData(locals) })
-            .finally(()=>{ setLoading(false) })
-            .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ReadLocals/getData', error.message) })
+        }else {
+            setLoading(false)
         }
     }
     
@@ -40,8 +39,8 @@ const ReadLocalsScreen = ({route, navigation}) => {
         navigation.setOptions({
           title: trans('locals'),
           headerRight: ()=>(
-            !privileges.create ? null :
-            <HeaderRight params={right} onPressRight={()=>launchScreen('CreateLocal', {callbackItem: callbackItem})}/> )
+            !permissions.create ? null :
+            <HeaderRight params={right} onPressRight={()=>launchScreen('CreateLocal', {callbackCreate: callbackItem})}/> )
         });
     }, [navigation]);
     
@@ -63,11 +62,13 @@ const ReadLocalsScreen = ({route, navigation}) => {
     }
 
     const callbackList = (value, index) => {
-        launchScreen('UpdateLocal', { local: value, index: index, callbackItem: callbackItem })
+        Constants.SESION.LOCAL = value;
+        launchScreen('UpdateLocal', { local: value, index: index, callbackUpdate: callbackItem })
     }
 
     return ( 
         isLoading ? <LoadingScreen loading={isLoading} size={'large'} color={colors.primary} /> 
+        : !permissions.read ? <Text style={[ styles.paddingMedium ]}>No existe una empresa ó no tiene permiso para ver los locales</Text>
         : <PlatformList props={{ data, isLoading, getData, callbackList }} />
     )
 }
@@ -80,7 +81,7 @@ const PlatformList = ({ props }) => {
         enableOrder: false,
         paramsOrderList: {
             labelFirst: 'orderby',
-            columns: [ 'name', 'details' ]
+            columns: [ 'name', 'phoneNumber' ]
         },
         enableFilter: false,
         paramsFilterList: {

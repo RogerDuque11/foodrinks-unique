@@ -23,7 +23,7 @@ const CreateProductScreen = ({route, navigation}) => {
     const { callbackItem } = route.params
     const [ isLoading, setLoading ] = useState(false)
     const [ product, setProduct ] = useState(new Product())
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
 
     const permissions = {
         selectLocal: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' ? true : false,
@@ -51,7 +51,7 @@ const CreateProductScreen = ({route, navigation}) => {
         if( ! exceptionsValidate && LOCAL.companyCode ){
             try {
                 setLoading(true)
-                var ref = 'COMPANIES/'+LOCAL.companyCode+'/PRODUCTS/'+product.code
+                var ref = 'COMPANY/'+LOCAL.companyCode+'/PRODUCTS/'+product.code
                 if(product.photoUrl){
                     product.photoUrl = await FBController.ST_Upload(ref, product.photoUrl, 'ORIGIN')
                 } 

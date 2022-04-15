@@ -8,6 +8,7 @@ import InputText from '../components/InputText'
 import LoadingScreen from '../components/LoadingScreen'
 import ContentLocation from '../components/ContentLocation'
 
+import FBController from  '../controllers/FirebaseController'
 import Partner from  '../models/Partner'
 
 
@@ -40,7 +41,13 @@ const CreatePartnerScreen = ({route, navigation}) => {
                 setLoading(true)
                 delete partner['setValuesFromObject']
                 delete partner['partner']
-                callbackCreate(partner, 'PARTNERS')
+                var copy = {...partner}
+                delete copy['password']
+                delete copy['usertype']
+                delete copy['typeID']
+                delete copy['disabled']
+                await FBController.FS_Create('PARTNER', 'CURRENT', copy, 'ORIGIN')
+                callbackCreate(partner, 'PARTNER')
                 navigation.goBack(null)
             } catch (error) {
                 Constants.NOTIFY('ERROR', error.code, 'CreatePartner/onPressCreate', error.message)

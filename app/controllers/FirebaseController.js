@@ -84,6 +84,10 @@ class FirebaseController {
     ST_Download = async (ref, ORIGIN) => {
         //return (await FirestoreController.readDataOn({ref, ORIGIN}))
     }
+
+    ST_Delete = (ref, id, ORIGIN) => {
+        return FirestoreController.deleteData({ref, id, ORIGIN})
+    }
     
     
     

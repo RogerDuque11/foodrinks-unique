@@ -26,7 +26,7 @@ const CreateProductLocalScreen = ({route, navigation}) => {
     const [ isLoading, setLoading ] = useState(false)
     const [ productLocal, setProductLocal ] = useState(new ProductLocal())
     const product = useRef(productLocal)
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
 
     const permissions = {
         selectPlace: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' 

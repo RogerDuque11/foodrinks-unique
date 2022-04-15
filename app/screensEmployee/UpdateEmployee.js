@@ -22,7 +22,7 @@ const UpdateEmployeeScreen = ({route, navigation}) => {
     const [ isLoading, setLoading ] = useState(false)
     const [ copy, setCopy ] = useState({...employee})
     const [ update, setUpdate ] = useState(false)
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
     const privileges = {
         delete: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER',
         update: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' || PROFILE.position === 'ADMIN' ? true : false ,

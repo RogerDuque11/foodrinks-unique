@@ -53,6 +53,7 @@ const UpdateMeasureScreen = ({route, navigation}) => {
             try {
                 setLoading(true)
                 setUpdate(false)
+                copy.key = copy.key ? copy.key.toLocaleLowerCase() : ""
                 await FBController.FS_Update('MEASURES', copy.code, copy, 'ORIGIN')
                 new Measure().setValuesFromObject(measure, copy)
                 callbackItem('UPDATE', copy, index)
@@ -72,9 +73,7 @@ const UpdateMeasureScreen = ({route, navigation}) => {
     }
 
     const onPressDelete = () => {
-        copy['state'] = 'DELETED'
-        copy['enable'] = false
-        FBController.FS_Update('MEASURES', copy.code, copy, 'ORIGIN')
+        FBController.FS_Delete('MEASURES', copy.code, 'ORIGIN')
         callbackItem('DELETE', copy, index)
         navigation.goBack(null)
     }
@@ -88,19 +87,18 @@ const UpdateMeasureScreen = ({route, navigation}) => {
                     <InputText
                         tag={trans('code')} type={'default'} editable={false}
                         value={(copy.code).toString()} />
-                    <InputText
-                        tag={trans('name')} type={'default'} editable={update}
-                        value={(copy.name).toString()}
-                        onChangeText={(text) => copy.name = text } />
-                    <InputText
-                        tag={trans('details')} type={'default'} editable={update}
-                        value={(copy.details).toString()}
-                        onChangeText={(text) => copy.details = text } />
-
-                    <View style={[ styles.row, styles.paddingSmall_Y, styles.justifyBetween ]}>
-                        <Text style={[ styles.colorText, styles.paddingTiny_X ]}>{trans('enabled')}</Text>
-                        <Switch value={copy.enable} color={colors.primary} onValueChange={!update? null : (value) => copy.enable = value }></Switch>
-                    </View>
+                    <View style={[ styles.row, styles.justifyBetween ]}>
+                        <InputText
+                            tag={trans('name')} type={'default'} editable={update}
+                            value={(copy.name).toString()}
+                            onChangeText={(text) => copy.name = text } 
+                            containerStyle={[ {width: '72%'} ]}/>
+                        <InputText
+                            tag={trans('key')} type={'default'} editable={update}
+                            value={(copy.key).toString()}
+                            onChangeText={(text) => copy.key = text } 
+                            containerStyle={[ {width: '24%'} ]}/>
+                        </View>
                     {
                         update && permissions.delete ? 
                         <Button  
@@ -123,7 +121,7 @@ const validation = (attrs, trans) =>{
     const _v = Constants.VALIDATE
 
     Object.entries(attrs).map(([key, value]) => {
-        if(key === 'code' || key === 'name'){
+        if(key === 'code' || key === 'name'|| key === 'key'){
             _v.verifyString(value) ? null : exep[key] = '\n * ' + trans(key) + ': Obigatorio'
         }
     })

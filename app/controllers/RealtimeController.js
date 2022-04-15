@@ -5,7 +5,7 @@ var consol = Constants.CONSOLE
 
 const verifyRef = (ORIGIN) => {
     const { PROFILE, COMPANY } = Constants.SESION
-    var REF_RT = Firebase.database.ref('COMPANIES')
+    var REF_RT = Firebase.database.ref('COMPANY')
     var CHILD = COMPANY ? COMPANY.CODE : ''
     var REF = ORIGIN || !CHILD  ? '' : REF_RT.child(CHILD+'')
     return REF

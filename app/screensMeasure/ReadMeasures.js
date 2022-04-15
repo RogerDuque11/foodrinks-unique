@@ -19,7 +19,7 @@ const ReadMeasuresScreen = ({route, navigation}) => {
 
     async function getData(){
         setLoading(true)
-        await FBController.FS_ReadBy('MEASURES', 'enable', '==', true, 'ORIGIN')
+        await FBController.FS_Read('MEASURES')
         .then((measures)=>{ setData(measures) })
         .finally(()=>{ setLoading(false) })
         .catch(error => { Constants.NOTIFY('ERROR', error.code, 'ReadMeasures/getData', error.message) })

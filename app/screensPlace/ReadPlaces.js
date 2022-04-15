@@ -14,7 +14,7 @@ const ReadPlacesScreen = ({route, navigation}) => {
     const { PROFILE, LOCAL } = Constants.SESION
     const { styles, colors, trans } = CurrentScheme()
 
-    const [isLoading, setLoading] = useState(true)
+    const [isLoading, setLoading] = useState(false)
     const [data, setData] = useState([])
     const privileges = {
         create: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER' || PROFILE.position === 'ADMIN' ? true : false

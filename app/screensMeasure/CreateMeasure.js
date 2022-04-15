@@ -12,7 +12,6 @@ import FBController from  '../controllers/FirebaseController'
 import Measure from  '../models/Measure'
 
 const _F = Constants.FUNCTIONS
-var DateFormat = _F.DateFormat
 
 const CreateMeasureScreen = ({route, navigation}) => {
     const { PROFILE, LOCAL } = Constants.SESION
@@ -22,7 +21,7 @@ const CreateMeasureScreen = ({route, navigation}) => {
     const [ measure, setMeasure ] = useState(new Measure())
 
     var date = new Date()
-    measure.code = DateFormat.code(date)
+    //measure.code = DateFormat.code(date)
     
     useLayoutEffect(() => {
         const left  = { icon: 'close', color: colors.text }
@@ -37,12 +36,14 @@ const CreateMeasureScreen = ({route, navigation}) => {
     }, [navigation]);
 
     const onPressCreate = async () => {
+        measure.code = _F.createKey(measure.name)
         var exceptionsValidate = validation(measure, trans)
         if( ! exceptionsValidate ){
             try {
                 setLoading(true)
+                measure.key = measure.key ? measure.key.toLocaleLowerCase() : ""
                 await FBController.FS_Create('MEASURES', measure.code, measure, 'ORIGIN')
-                measure.enable ? callbackItem('CREATE', measure) : null
+                callbackItem('CREATE', measure)
                 setLoading(false)
                 navigation.goBack(null)
             } catch (error) {
@@ -63,18 +64,18 @@ const CreateMeasureScreen = ({route, navigation}) => {
 
                 { isLoading ? <LoadingScreen loading={isLoading} size={'large'} color={colors.primary} /> : null }
                 <View style={[ styles.column, styles.paddingMedium_X, styles.widthForm, styles.marginMedium_B ]}>
-                    <InputText
+                    {/* <InputText
                         tag={trans('code')} type={'default'} editable={false}
-                        value={(measure.code).toString()} />
-                    <InputText
-                        tag={trans('name')} type={'default'}
-                        onChangeText={(text) => measure.name = text } />
-                    <InputText
-                        tag={trans('details')} type={'default'}
-                        onChangeText={(text) => measure.details = text } />
-                    <View style={[ styles.row, styles.paddingSmall_Y, styles.justifyBetween ]}>
-                        <Text style={[ styles.colorText, styles.paddingTiny_X ]}>{trans('enabled')}</Text>
-                        <Switch value={measure.enable} color={colors.primary} onValueChange={(value) => measure.enable = value }></Switch>
+                        value={(measure.code).toString()} /> */}
+                    <View style={[ styles.row, styles.justifyBetween ]}>
+                        <InputText
+                            tag={trans('name')} type={'default'}
+                            onChangeText={(text) => measure.name = text } 
+                            containerStyle={[ {width: '72%'} ]}/>
+                        <InputText
+                            tag={trans('key')} type={'default'}
+                            onChangeText={(text) => measure.key = text } 
+                            containerStyle={[ {width: '24%'} ]}/>
                     </View>
                 </View> 
                 
@@ -88,7 +89,7 @@ const validation = (attrs, trans) =>{
     const _v = Constants.VALIDATE
 
     Object.entries(attrs).map(([key, value]) => {
-        if(key === 'name'){
+        if(key === 'name' || key === 'key'){
             _v.verifyString(value) ? null : exep[key] = '\n * ' + trans(key) + ': Obigatorio'
         }
     })

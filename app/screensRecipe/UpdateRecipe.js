@@ -29,7 +29,7 @@ const UpdateRecipeScreen = ({route, navigation}) => {
         selectLocal: PROFILE.usertype === 'ROOT' || PROFILE.usertype === 'PARTNER'
         || (PROFILE.position === 'ADMIN' && !PROFILE.localCode ) ? true : false
     }
-    const imageWidth = (Platform.OS !== 'web' ? size.fullWidh/3 : size.fullWidh/10) - size.paddingSmall
+    const imageWidth = (Platform.OS !== 'web' ? size.fullWidth/3 : size.fullWidth/10) - size.paddingSmall
 
     const updateHeader = () => {
         const title = update ? 'recipeEdit' : 'recipeDetails'
@@ -58,7 +58,7 @@ const UpdateRecipeScreen = ({route, navigation}) => {
         if( ! exceptionsValidate && LOCAL.companyCode ){
             try {
                 setLoading(true)
-                var ref = 'COMPANIES/'+LOCAL.companyCode+'/RECIPES/'+recipe.code
+                var ref = 'COMPANY/'+LOCAL.companyCode+'/RECIPES/'+recipe.code
                 if(copy.photoUrl !== recipe.photoUrl){
                     copy.photoUrl = await FBController.ST_Upload(ref, copy.photoUrl, 'ORIGIN')
                 } 
